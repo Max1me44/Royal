@@ -21,8 +21,8 @@ Ce bot utilise principalement l'API discord pour fonctionner.
 ## Versions
 **Dernière version stable :** 1.0  
 **Dernière version :** 1.0  
-Liste des versions : [Cliquer pour afficher](https://github.com/CarqueMax/Royal/tags)
+Liste des versions : [liste des versions](https://github.com/CarqueMax/Royal/tags)
 
 ## Auteurs
 * **Maxime C** _alias_ [@CarqueMax](https://github.com/CarqueMax)
-* **Contributeurs** liste des [contributeurs](https://github.com/CarqueMax/Royal/graphs/contributors)
+* **Contributeurs** [liste des contributeurs](https://github.com/CarqueMax/Royal/graphs/contributors)
