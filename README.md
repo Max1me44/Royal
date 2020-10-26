@@ -1,0 +1,2 @@
+# Royal
+Bot Discord Personnel
