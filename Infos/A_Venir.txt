@@ -1,0 +1,7 @@
+---- LISTE FONCTIONNALITÉ A VENIR ----
+
+- changer prefix avec une commande
+- commandes de modération (à partir de v2.0)
+- casino (pas défini)
+- emploie du temps ENT (pas défini)
+

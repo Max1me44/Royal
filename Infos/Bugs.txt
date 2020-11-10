@@ -1,0 +1,9 @@
+---- BUGS A REGLER ----
+
+✔ - status bot : fonctionne pas, ne change pas
+❌ - servstats : problème avec "Propriétaire du serveur", plante
+❌ - servstats : problème avec "Nombre de channels", undefined
+❌ - servstats : problème avec "setThumbnail", n'affiche rien
+❌ - servstats : problème avec "setImage", n'affiche rien
+❌ - ping : valeur NaN
+

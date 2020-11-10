@@ -1,0 +1,17 @@
+---- LISTE VERSIONS ----
+
+MAJ v1.0
+  • Création du bot (Discord.js - v12(stable))
+  • Création des premières commandes
+    |_ help : liste de toutes les commandes possibles (3 types de commande help: helpall helpmod helpfun helpother)
+        |_ helpmod : liste commandes de modération
+        |_ helpfun : liste commandes de jeux
+        |_ helpother : liste autres commandes 
+        |_ helpall : liste toutes les commandee
+    |_ servstats : statistiques du serveur
+    |_ userstats : statistiques de l'utilisateur
+    |_ pp : photo de profil de l'utilisateur
+    |_ botstats : statistiques du bot
+    |_ ping : latence du bot
+    |_ invite : donne lien d'invitation du bot
+
