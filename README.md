@@ -1,5 +1,5 @@
 # Royal
-![GitHub Version](https://img.shields.io/github/release/CarqueMax/t.svg?style=for-the-badge)  
+![GitHub Version](https://img.shields.io/github/release/CarqueMax/Royal.svg?style=for-the-badge)  
 ![Royal](https://i.ibb.co/VQs1mbF/Royal-Logo.png)
 
 [![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)](https://developer.mozilla.org/fr/docs/Web/JavaScript)  [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://discord.js.org/#/)
