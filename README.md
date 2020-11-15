@@ -19,8 +19,8 @@ Ce bot utilise principalement l'API discord pour fonctionner.
 * [une API](lien) - API
 
 ## Versions
-**Dernière version stable :** 1.0  
-**Dernière version :** 1.0  
+**Dernière version stable :** 1.1  
+**Dernière version :** 1.1  
 Liste des versions : [liste des versions](https://github.com/CarqueMax/Royal/tags)
 
 ## Auteurs
