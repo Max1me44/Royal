@@ -13,14 +13,14 @@ Ce bot utilise principalement l'API discord pour fonctionner.
 
 * [JavaScript](https://developer.mozilla.org/fr/docs/Web/JavaScript) - Langage de programmation
 * [Discord.js](https://discord.js.org/#/) - API Discord
-* [Node.js](https://nodejs.org/en/)
+* [Node.js](https://nodejs.org/en/) - Exécute du code JavaScript en dehors des navigateurs, directement sur le serveur
 * [Visual Studio Code](https://code.visualstudio.com/) - Editeur de textes
 * [IntelliJ](https://www.jetbrains.com/fr-fr/idea/) - Editeur de textes
-* [une API](lien) - API
+* [OS-Utils](https://www.npmjs.com/package/node-os-utils) - API surveillance des signes vitaux du serveur
 
 ## Versions
-**Dernière version stable :** 1.0  
-**Dernière version :** 1.0  
+**Dernière version stable :** 1.2  
+**Dernière version :** 1.2  
 Liste des versions : [liste des versions](https://github.com/CarqueMax/Royal/tags)
 
 ## Auteurs

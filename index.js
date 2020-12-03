@@ -8,10 +8,13 @@ const client = new Discord.Client();
 const config = require('./config.json');
 client.login(config.token).catch(err => console.log("Token invalide"));
 const prefix = config.prefix;
+const versionBot = config.version;
+const osu = require('node-os-utils');
+let memoryUsage = process.memoryUsage().heapUsed / 1024 / 1024;
 const ppbot = "https://i.ibb.co/VQs1mbF/Royal-Logo.png";
 const activities_list = [
     prefix + "help", 
-    "en dev ⚙",
+    "by Safe",
 ];
 const status_list = [
     "online",
@@ -43,7 +46,7 @@ client.on('ready', () => {
 // HELP COMMANDES
 client.on("message", async message => {
     if (message.content === prefix + "help") {
-        var help_embed = new Discord.MessageEmbed()
+        let help_embed = new Discord.MessageEmbed()
 	        .setColor('#e4b400')
             .setDescription("```HELP " + client.user.username + "```")
             .setThumbnail(ppbot)
@@ -58,12 +61,12 @@ client.on("message", async message => {
         message.channel.send(help_embed);
     }
 
-    var mod_embed = new Discord.MessageEmbed()
+    let mod_embed = new Discord.MessageEmbed()
 	    .setColor('#ff0000')
         .setDescription("```HELP MODÉRATION " + client.user.username + "```")
         .setThumbnail(ppbot)
 	    .addFields(
-            { name: prefix + "none", value: 'none', inline: true },
+            { name: "none", value: 'none', inline: true },
 	    	// { name: prefix + "kick <membre>", value: 'Exclu un membre', inline: true },
 	    	// { name: prefix + "ban <membre>", value: 'Banni un membre', inline: true },
             // { name: prefix + "clear <nombre de massage>", value: 'Efface un certain nombre de messages', inline: true },
@@ -75,7 +78,7 @@ client.on("message", async message => {
 	    .setTimestamp()
         .setFooter(`${client.user.tag}`, ppbot)
 
-    var fun_embed = new Discord.MessageEmbed()
+    let fun_embed = new Discord.MessageEmbed()
 	    .setColor('#ff00ec')
         .setDescription("```HELP FUN " + client.user.username + "```")
         .setThumbnail(ppbot)
@@ -85,7 +88,7 @@ client.on("message", async message => {
 	    .setTimestamp()
         .setFooter(`${client.user.tag}`, ppbot)
 
-    var other_embed = new Discord.MessageEmbed()
+    let other_embed = new Discord.MessageEmbed()
 	    .setColor('#00ff6d')
         .setDescription("```HELP OTHER " + client.user.username + "```")
         .setThumbnail(ppbot)
@@ -120,7 +123,7 @@ client.on("message", async message => {
 // OTHER COMMANDES
 client.on("message", async message => {
     if(message.content === prefix + "invite") {
-        var invite_embed = new Discord.MessageEmbed()
+        let invite_embed = new Discord.MessageEmbed()
             .setTitle("**Invite le bot sur un de tes serveurs**")
             .setDescription("Bot développé par <@398863083176722432> dans le but de s'entrainer en JavaScript. Il possède des commandes de modération :tools: , quelques petits jeux, ainsi que d'autre commandes sympa :bar_chart: .")
             .addField(":link: LIEN D'INVITATION :link:", "Invite le bot en cliquant sur __**[ce lien](https://discord.com/oauth2/authorize?client_id=770372006336004096&permissions=8&scope=bot)**__.")
@@ -132,15 +135,15 @@ client.on("message", async message => {
         function conversion_seconde_heure() {
             // "process.uptime()" = fonction node pour avoir le temps en s
             // si reste= 123332221 alors 1427j 10h 57min 1s
-            var reste= parseInt(process.uptime());
-            var result='';
-            var nbJours=Math.floor(reste/(3600*24));
+            let reste= parseInt(process.uptime());
+            let result='';
+            let nbJours=Math.floor(reste/(3600*24));
             reste -= nbJours*24*3600;
-            var nbHours=Math.floor(reste/3600);
+            let nbHours=Math.floor(reste/3600);
             reste -= nbHours*3600;
-            var nbMinutes=Math.floor(reste/60);
+            let nbMinutes=Math.floor(reste/60);
             reste -= nbMinutes*60;
-            var nbSeconds=reste;
+            let nbSeconds=reste;
             if(nbJours>0)
                 result=result+nbJours+'j ';
             if(nbHours>0)
@@ -151,42 +154,41 @@ client.on("message", async message => {
                 result=result+nbSeconds+'s ';
             return result;
         }
-        var plurielServeur;
+        let plurielServeur;
         if(client.guilds.cache.size > 1) {
             plurielServeur = 's';
         } else {
             plurielServeur = '';
         }
-        var plurielUser;
-        if(client.users.cache.size > 1) {
-            plurielUser = 's';
-        } else {
-            plurielUser = '';
-        }
-        var ping = Date.now() - message.createdTimestamp;
-        var botstats_embed = new Discord.MessageEmbed()
-            .setTitle(`:pencil: Informations sur ${client.user.tag}`)
-            .setDescription("--------------------------------------------")
-            .addFields(
-                { name: ":clipboard: Nom :", value: client.user.tag, inline: true },
-                { name: ":id: ID :", value: client.user.id, inline: true },
-                { name: ":symbols: Prefix :", value: "``" + prefix + "``" },
-                { name: ":satellite: Actif sur :", value: client.guilds.cache.size + "serveur" + plurielServeur, inline: true },
-                { name: ":bar_chart: Utilisateurs :", value: client.users.cache.size + " utilisateur" + plurielUser, inline: true },
-                { name: ":beginner: Serveur support :", value: "none" },
-                { name: ":battery: En ligne depuis :", value: conversion_seconde_heure(), inline: true },
-                { name: ":ping_pong: Ping du bot :", value: ping + " Milliseconds", inline: true },
-                { name: ":desktop: Développeur :", value: "<@398863083176722432>", inline: true },
-            )
-            .setThumbnail(ppbot)
-            .setTimestamp()
-            .setFooter(`${client.user.tag}`, ppbot)
-        message.channel.send(botstats_embed);
+        let cpu = osu.cpu;
+        cpu.usage()
+        .then(cpuPercentage => {
+            let botstats_embed = new Discord.MessageEmbed()
+                .setTitle(`:pencil: Informations sur ${client.user.tag}`)
+                .setDescription("--------------------------------------------")
+                .addFields(
+                    { name: ":clipboard: Nom :", value: client.user.tag, inline: true },
+                    { name: ":id: ID :", value: client.user.id, inline: true },
+                    { name: ":symbols: Prefix :", value: "``" + prefix + "``", inline: true },
+                    { name: ":satellite: Actif sur :", value: client.guilds.cache.size + "serveur" + plurielServeur, inline: true },
+                    { name: ":beginner: Serveur support :", value: "none", inline: true },
+                    { name: ":battery: En ligne depuis :", value: conversion_seconde_heure(), inline: true },
+                    { name: ":desktop: Développeur :", value: "<@398863083176722432>", inline: true},
+                    { name: ":robot: Bot version :", value: "v" + versionBot, inline: true },
+                    { name: "Memory usage :", value: `${Math.round(memoryUsage * 100) / 100} MB`, inline: true },
+                    { name: "Platform :", value: `Node.js ${process.version} sur ${process.platform}`, inline: true },
+                    { name: ":bar_chart: CPU usage :", value: cpuPercentage + "%", inline: true },
+                )
+                .setThumbnail(ppbot)
+                .setTimestamp()
+                .setFooter(`${client.user.tag}`, ppbot)
+            message.channel.send(botstats_embed);
+        });
     }
 
     if(message.content.startsWith(prefix + "userstats")) {
         const user = message.mentions.users.first() || message.author;
-        var userstats_embed = new Discord.MessageEmbed()
+        let userstats_embed = new Discord.MessageEmbed()
             .setAuthor(message.author.username)
             .setTitle("Voici quelques infos sur ce compte")
             .setDescription("--------------------------------------------")
@@ -204,7 +206,7 @@ client.on("message", async message => {
 
     if(message.content.startsWith(prefix + 'pp')) {
         const user = message.mentions.users.first() || message.author;
-        var pp_embed = new Discord.MessageEmbed()
+        let pp_embed = new Discord.MessageEmbed()
             .setColor(0x333333)
             .setAuthor(user.username)
             .setImage(user.avatarURL());
@@ -216,9 +218,8 @@ client.on("message", async message => {
         if(!guild.available) return; // Stop si la guild n'existe pas
         await message.guild.members.fetch(message.guild.ownerID) // Récupère le proprio
               .then(guildMember => sOwner = guildMember) // le trouve
-        var propio = guild.member(sOwner) ? sOwner.toString() : guild.owner.user.tag;
-
-        var servstats_embed = new Discord.MessageEmbed()
+        let propio = guild.member(sOwner) ? sOwner.toString() : guild.owner.user.tag;
+        let servstats_embed = new Discord.MessageEmbed()
             .setTitle("Voici quelques infos sur ce serveur")
             .setDescription("--------------------------------------------")
             .addField(':clipboard: Nom', `${message.guild.name}`, (`${message.guild.nameAcronym, true}`, true))
@@ -238,13 +239,13 @@ client.on("message", async message => {
     }
 
     if(message.content === prefix + "ping"){
-        var ping = Date.now() - message.createdTimestamp;
-        var ping_embed = new Discord.MessageEmbed()
+        let ping = Date.now() - message.createdTimestamp;
+        let ping_embed = new Discord.MessageEmbed()
         .setAuthor(`${client.user.tag}`, client.user.avatarURL)
         .setFooter(`${client.user.tag}`, ppbot)
         .setTimestamp()
-        .addField(`Latence actuelle de ${client.user.username} :`, ping + `Milliseconds`)
-        .addField(`Latence de l'API :`, client.ws.ping + " Milliseconds")
+        .addField(`Latence actuelle de ${client.user.username} :`, ping + ` ms`)
+        .addField(`Latence de l'API :`, client.ws.ping + " ms")
         message.channel.send(ping_embed)
     }
 });
