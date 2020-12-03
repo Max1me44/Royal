@@ -1,6 +1,5 @@
 /**
  * @CarqueMax
- * @version v1.0
  * Bot discord personnel
  */
 const Discord = require('discord.js');
