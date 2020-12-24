@@ -255,9 +255,10 @@ client.on("message", async message => {
     let args = messageArray.slice(1)
     if(message.content.startsWith(prefix + "8ball")) {
         if (!args[0]) return message.channel.send("Il me semble que tu as oublié de poser la question :confused:")
-        let reponse = ["Oui","Non","Bats les couilles, va faire chier un autre bot","Certainement pas, vu la gueule de ce chacal","Mouais vite fait","Malheureusement, c'est sans espoir","A 100% !!!","Bien sur",];
+        let reponse = ["D'après moi c'est oui", "C'est non", "C'est certain", "Peu probable", "Oui absolument", "Faut pas rêver", "N'y compte pas", "Concentrez vous mieux et recommencez", "Impossible", "Très probable", "Il vaut mieux ne pas répondre", "Et puis quoi encore ?", "C'est très incertain", "Sans aucun doute"];
         let random = Math.floor((Math.random() * reponse.length));
         let question = args.slice(0).join(" ");
+        if (question.length > 1024) return message.channel.send("Ta question est trop longue, repose la différemment")
         let ball_embed = new Discord.MessageEmbed()
             .setTitle(`**Commandes 8ball de __${message.author.tag}__**`)
             .addField("``Ta question:``", question)

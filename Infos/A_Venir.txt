@@ -1,7 +1,11 @@
 ---- LISTE FONCTIONNALITÉ A VENIR ----
 
 - changer prefix avec une commande
+- changer activité bot avec une commande
+- système de giveway
+- système de compte à rebours
 - commandes de modération (à partir de v2.0)
 - casino (pas défini)
-- emploie du temps ENT (pas défini)
+- emploie du temps ENT, envoie automatiquement la liste des cours de la journée... (pas défini)
+- jeu du + ou -
 

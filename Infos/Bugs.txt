@@ -11,4 +11,6 @@ v1
 ❌ - userstats : date rejoint serveur undefined
 ✔ - userstats : "setImage" n'affiche rien
 ✔ - pp : pas d'image
+✔ - 8ball : corriger bug limite de caractère
 
+v2
