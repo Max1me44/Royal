@@ -8,4 +8,7 @@
 - casino (pas défini)
 - emploie du temps ENT, envoie automatiquement la liste des cours de la journée... (pas défini)
 - jeu du + ou -
+- météo
+- gestion du temps avec le module moment.js
+- logs interne
 

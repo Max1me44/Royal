@@ -44,7 +44,7 @@ client.on('ready', () => {
 
 // HELP COMMANDES
 client.on("message", async message => {
-    if (message.content === prefix + "help") {
+    if(message.content === prefix + "help") {
         let help_embed = new Discord.MessageEmbed()
 	        .setColor('#e4b400')
             .setDescription("```HELP " + client.user.username + "```")
@@ -65,14 +65,12 @@ client.on("message", async message => {
         .setDescription("```HELP MODÉRATION " + client.user.username + "```")
         .setThumbnail(ppbot)
 	    .addFields(
-            { name: "none", value: 'none', inline: true },
-	    	// { name: prefix + "kick <membre>", value: 'Exclu un membre', inline: true },
-	    	// { name: prefix + "ban <membre>", value: 'Banni un membre', inline: true },
-            // { name: prefix + "clear <nombre de massage>", value: 'Efface un certain nombre de messages', inline: true },
-            // { name: prefix + "mute <membre>", value: 'Mute un membre', inline: true },
-            // { name: prefix + "unmute <membre>", value: 'Démute un membre', inline: true },
-            // { name: prefix + "dm <membre> <message>", value: 'Envoie message à un membre', inline: true },
-            // { name: prefix + "dmall <massage>", value: 'Envoie message à all', inline: true },
+	    	{ name: prefix + "kick <membre> <raison>", value: 'Exclu un membre' },
+	    	{ name: prefix + "ban <membre> <raison>", value: 'Banni un membre' },
+            { name: prefix + "clear <nombre de massage>", value: 'Efface un certain nombre de messages' },
+            { name: prefix + "mute <membre> <raison>", value: 'Mute un membre' },
+            { name: prefix + "unmute <membre> <raison>", value: 'Démute un membre' },
+            { name: prefix + "dm <membre> <message>", value: 'Envoie message à un membre' },
 	    )
 	    .setTimestamp()
         .setFooter(`${client.user.tag}`, ppbot)
@@ -102,22 +100,189 @@ client.on("message", async message => {
 	    .setTimestamp()
         .setFooter(`${client.user.tag}`, ppbot)
 
-    if (message.content.startsWith(prefix + "helpmod")) {
+    if(message.content.startsWith(prefix + "helpmod")) {
         message.channel.send(mod_embed);
     }
-    if (message.content.startsWith(prefix + "helpfun")) {
+    if(message.content.startsWith(prefix + "helpfun")) {
         message.channel.send(fun_embed);
     }
-    if (message.content.startsWith(prefix + "helpother")) {
+    if(message.content.startsWith(prefix + "helpother")) {
         message.channel.send(other_embed);
     }
-    if (message.content.startsWith(prefix + "helpall")) {
+    if(message.content.startsWith(prefix + "helpall")) {
         message.channel.send(mod_embed);
         message.channel.send(fun_embed);
         message.channel.send(other_embed);
     }
 });
 
+// MOD COMMANDES
+client.on("message", async message => {
+    if(message.content.startsWith(prefix + "kick")) {
+        let messageArray = message.content.split(" ")
+        let args = messageArray.slice(1)
+        if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
+        let kUser = message.guild.member(message.mentions.users.first());
+        if(!kUser) return message.reply("Utilisateur spécifié introuvable :thinking:");
+        let kReason = args.join(" ").slice(22);
+        if(!kReason){var eReason = "Aucune raison spécifiée"};
+        if(!message.member.hasPermission("KICK_MEMBERS")) return message.reply("Vous n'avez pas les permissions requise pour executer cette commande :no_entry_sign:");
+        if(kUser.hasPermission('KICK_MEMBERS')) return message.reply("Vous ne pouvez pas exclure cet utilisateur :hugging:");
+        message.guild.member(kUser).kick(kReason || eReason).then( msg => {
+            message.channel.send(`:white_check_mark: Utilisateur exclu avec succès`);
+        });
+    };
+
+    if(message.content.startsWith(prefix + "ban")) {
+        let messageArray = message.content.split(" ")
+        let args = messageArray.slice(1)
+        if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
+        let bUser = message.guild.member(message.mentions.users.first());
+        if(!bUser) return message.reply("Utilisateur spécifié introuvable :thinking:");
+        let bReason = args.join(" ").slice(22);
+        if(!bReason){var eReason = "Aucune raison spécifiée"};
+        if(!message.member.hasPermission("BAN_MEMBERS")) return message.reply("Vous n'avez pas les permissions requise pour executer cette commande :no_entry_sign:");
+        if(bUser.hasPermission('BAN_MEMBERS')) return message.reply("Vous ne pouvez pas bannir cet utilisateur :hugging:");
+        let reason = bReason || eReason;
+        message.guild.members.ban(bUser, {reason}).then( msg => {
+            message.channel.send(`:white_check_mark: Utilisateur banni avec succès`);
+        });
+    };
+
+    if(message.content.startsWith(prefix + "clear")) {
+        let messageArray = message.content.split(" ");
+        let args = messageArray.slice(1);
+        if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
+        let nb = parseInt(args[0]) + 1;
+        if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous n'avez pas les permissions requise pour executer cette commande :no_entry_sign:");
+        if(!args[0]) return message.reply(`Veuillez préciser le nombre de messages a supprimer \n Commande : **${prefix}clear <nombre de messages>**`);
+        if(nb <= 1 || nb > 100) return message.reply("Veuillez indiquer un nombre compris entre 1 et 99")
+        message.channel.bulkDelete(nb, true).catch(err => {
+            message.reply(":confused: Erreur de syntaxe avec la commande clear");
+        });
+        message.channel.send(`:white_check_mark: \`${nb}\` message(s) ont été supprimé(s) (sauf ceux plus de 2 semaines)`);
+    };
+
+    
+    if(message.content.startsWith(prefix + "mute")) {
+        let messageArray = message.content.split(" ")
+        let args = messageArray.slice(1)
+        if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
+        let mUser = message.guild.member(message.mentions.users.first());
+        if(!mUser) return message.reply("Utilisateur spécifié introuvable :thinking:");
+        let mReason = args.join(" ").slice(22);
+        if(!mReason){var eReason = "Aucune raison spécifiée"};
+        if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous n'avez pas la permissions requise pour executer cette commande :no_entry_sign:");
+        let reason = mReason || eReason;
+
+        let role = message.guild.roles.cache.find(r => r.name === "Mute member");
+
+        //if(message.member.roles.cache.some(r=>["Mute member"].includes(r.name))) return message.reply("Cet utilisateur est déja muté :zipper_mouth:");
+        if(!role){
+            try {
+                role = await message.guild.roles.create({
+                    name: "Mute member",
+                    color:"#ff1000",
+                    permissions:['SEND_MESSAGES', 'ADD_REACTIONS']
+                });
+                message.guild.channels.cache.forEach(async (channel, id) => {
+                    await channel.overwritePermissions(role, {
+                        SEND_MESSAGES: false,
+                        ADD_REACTIONS: false
+                    });
+                });
+            } catch (e) {
+                console.log(e.stack)
+            }
+        }
+        //if(mUser.roles.has(role.id)) return message.reply("Cet utilisateur est déja muté :zipper_mouth:");
+        await(mUser.addRole(role));
+        message.channel.send(`L'utilisateur : **${mUser}** a été mute :zipper_mouth:`);
+    };
+    
+
+    /*
+    if(message.content.startsWith(prefix + "mute")){
+        let messageArray = message.content.split(" ");
+        let args = messageArray.slice(1);
+        if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
+        if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous n'avez pas la permissions requise pour executer cette commande :no_entry_sign:");
+        let toMute = message.guild.member(message.mentions.users.first());
+        if(!toMute) return message.reply("Utilisateur spécifié introuvable :thinking:");
+        let role = message.guild.roles.cache.find(r => r.name === "Mute member");
+        if(!role){
+            try {
+                role = await message.guild.roles.create({
+                    name: "Mute member",
+                    color:"#ff1000",
+                    permissions:['SEND_MESSAGES', 'ADD_REACTIONS']
+                });
+                message.guild.channels.forEach(async (channel, id) => {
+                    await channel.overwritePermissions(role, {
+                        SEND_MESSAGES: false,
+                        ADD_REACTIONS: false
+                    });
+                });
+            } catch (e) {
+                console.log(e.stack)
+            }
+        }
+        if(toMute.roles.has(role.id)) return message.reply("Cet utilisateur est déja muté :zipper_mouth:");
+        await(toMute.addRole(role));
+        message.channel.send(`L'utilisateur : **${toMute}** a été mute :zipper_mouth:`);
+    };
+    */
+
+    /*
+    if(message.content.startsWith(prefix + "unmute")){
+        let messageArray = message.content.split(" ");
+        let args = messageArray.slice(1);
+        if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
+        if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous n'avez pas la permissions requise pour executer cette commande :no_entry_sign:");
+        let toMute = message.guild.member(message.mentions.users.first());
+        if(!toMute) return message.reply("Utilisateur spécifié introuvable :thinking:");
+        let role = message.guild.roles.find(r => r.name === "Mute member");
+        if(!role){
+            try {
+                role = await message.guild.createRole({
+                    name: "Mute member",
+                    color:"#000000",
+                    permissions:[]
+                });
+                
+                message.guild.channels.forEach(async (channel, id) => {
+                    await channel.overwritePermissions(role, {
+                        SEND_MESSAGES: false,
+                        ADD_REACTIONS: false
+                    });
+                });
+            } catch (e) {
+                console.log(e.stack)
+            }
+        }
+        if(!toMute.roles.has(role.id)) return message.reply("Cet utilisateur n'est pas mute !");
+        await(toMute.removeRole(role));
+        message.channel.send(`L'utilisateur : **${toMute}** a été unmute :speaking_head:`);
+    };
+    */
+
+   if(message.content.startsWith(prefix + "dm")) {
+    let messageArray = message.content.split(" ")
+    let args = messageArray.slice(1)
+    let dmUser = message.guild.member(message.mentions.users.first());
+    if (!dmUser) return message.reply("Utilisateur spécifié introuvable :thinking::thinking:");
+    if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous n'avez pas les permissions requise pour executer cette commande :no_entry_sign:")
+    let dMessage = args.join(" ").slice(22);
+    if(dMessage.length < 1) return message.reply("Veullez entrer un message")
+    dmUser.send(`__${dmUser}, quelqu'un vous a envoyé un message:__`)
+    var dm_embed = new Discord.MessageEmbed()
+        .setDescription(`${dMessage}`)
+        .setColor("RANDOM")
+        .setTimestamp()
+    dmUser.send(dm_embed);
+    message.author.send(`Message envoyé avec succès à ${dmUser}`)
+}
+});
 
 // OTHER COMMANDES
 client.on("message", async message => {
@@ -186,6 +351,7 @@ client.on("message", async message => {
     }
 
     if(message.content.startsWith(prefix + "userstats")) {
+        //if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
         const user = message.mentions.users.first() || message.author;
         let userstats_embed = new Discord.MessageEmbed()
             .setAuthor(message.author.username)
@@ -213,6 +379,7 @@ client.on("message", async message => {
     }
 
     if(message.content === prefix + "servstats") {
+        if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
         const guild = message.guild; // Récupère la guild
         if(!guild.available) return; // Stop si la guild n'existe pas
         await message.guild.members.fetch(message.guild.ownerID) // Récupère le proprio
