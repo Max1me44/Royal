@@ -330,7 +330,7 @@ client.on("message", async message => {
     let args = messageArray.slice(1)
     if(message.content.startsWith(prefix + "say")) {
         let question = args.slice(0).join(" ");
-        //if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:");
+        if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:");
         message.delete();
         message.channel.send(question);
     }
