@@ -11,4 +11,4 @@
 - météo
 - gestion du temps avec le module moment.js
 - logs interne
-
+- pierre feuille papier ciseau

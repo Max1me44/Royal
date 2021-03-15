@@ -14,3 +14,8 @@ v1
 ✔ - 8ball : corriger bug limite de caractère
 
 v2
+❌ - kick : gérer erreur le bot n'a pas les perms
+❌ - ban : gérer erreur le bot n'a pas les perms
+❌ - clear : gérer erreur le bot n'a pas les perms
+❌ - dm : gérer erreur le bot n'a pas les perms
+❌ - statue : faire un json du statue

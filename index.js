@@ -11,9 +11,13 @@ const versionBot = config.version;
 const osu = require('node-os-utils');
 let memoryUsage = process.memoryUsage().heapUsed / 1024 / 1024;
 const ppbot = "https://i.ibb.co/VQs1mbF/Royal-Logo.png";
+const idLogs = "816637842922405948";
+let statuePerso = prefix + "help";
+let ancienStatue = statuePerso;
 const activities_list = [
-    prefix + "help", 
-    "by Safe",
+    //prefix + "help", 
+    //"by Safe",
+    statuePerso,
 ];
 const status_list = [
     "online",
@@ -32,11 +36,11 @@ client.on('ready', () => {
         const random1 = Math.floor(Math.random() * activities_list.length);
         const random2 = Math.floor(Math.random() * types_list.length);
         client.user.setActivity(activities_list[random1], { type: types_list[random2] });
-    }, 15000); // 15 secondes
+    }, 20000); // 20 secondes
     setInterval(() => {
         const random = Math.floor(Math.random() * status_list.length);
         client.user.setStatus(status_list[random]);
-    }, 15000); // 15 secondes
+    }, 20000); // 20 secondes
 })
 
 
@@ -46,58 +50,65 @@ client.on('ready', () => {
 client.on("message", async message => {
     if(message.content === prefix + "help") {
         let help_embed = new Discord.MessageEmbed()
-	        .setColor('#e4b400')
+            .setColor('#e4b400')
             .setDescription("```HELP " + client.user.username + "```")
             .setThumbnail(ppbot)
-	        .addFields(
-	        	{ name: prefix + "helpmod", value: 'Commandes modération' },
-	        	{ name: prefix + "helpfun", value: 'Commandes fun' },
+            .addFields(
+                { name: prefix + "helpmod", value: 'Commandes modération' },
+                { name: prefix + "helpfun", value: 'Commandes fun' },
                 { name: prefix + "helpother", value: 'Autres commandes' },
                 { name: prefix + "helpall", value: 'Donne toutes les commandes' },
-	        )
-	        .setTimestamp()
+            )
+            .setTimestamp()
             .setFooter(`${client.user.tag}`, ppbot)
         message.channel.send(help_embed);
     }
 
     let mod_embed = new Discord.MessageEmbed()
-	    .setColor('#ff0000')
+        .setColor('#ff0000')
         .setDescription("```HELP MODÉRATION " + client.user.username + "```")
         .setThumbnail(ppbot)
-	    .addFields(
-	    	{ name: prefix + "kick <membre> <raison>", value: 'Exclu un membre' },
-	    	{ name: prefix + "ban <membre> <raison>", value: 'Banni un membre' },
+        .addFields(
+            { name: prefix + "kick <membre> <raison>", value: 'Exclu un membre' },
+            { name: prefix + "ban <membre> <raison>", value: 'Banni un membre' },
             { name: prefix + "clear <nombre de massage>", value: 'Efface un certain nombre de messages' },
-            { name: prefix + "mute <membre> <raison>", value: 'Mute un membre' },
-            { name: prefix + "unmute <membre> <raison>", value: 'Démute un membre' },
-            { name: prefix + "dm <membre> <message>", value: 'Envoie message à un membre' },
-	    )
-	    .setTimestamp()
+            //{ name: prefix + "mute <membre> <raison>", value: 'Mute un membre' },
+            //{ name: prefix + "unmute <membre> <raison>", value: 'Démute un membre' },
+            { name: prefix + "dm <membre> <message>", value: 'Envoie un message en DM à un membre' },
+            { name: prefix + "say <message>", value: 'Fait parler le bot' },
+            { name: prefix + "statue <message>", value: '**BETA** Change le statue du bot' },
+        )
+        .setTimestamp()
         .setFooter(`${client.user.tag}`, ppbot)
 
     let fun_embed = new Discord.MessageEmbed()
-	    .setColor('#ff00ec')
+        .setColor('#ff00ec')
         .setDescription("```HELP FUN " + client.user.username + "```")
         .setThumbnail(ppbot)
-	    .addFields(
+        .addFields(
             { name: prefix + "8ball <question>", value: 'Le bot répond à te question'},
-	    )
-	    .setTimestamp()
+            { name: prefix + "ddos <membre>", value: 'DDOS une personne'},
+            { name: prefix + "compatible <membre>", value: 'Calcul la compatibilité avec une personne'},
+            { name: prefix + "pfpc", value: '**COMING SOON** Pierre Feuille Papier Ciseau'},
+            { name: prefix + "sendpanda", value: '**COMING SOON** Envoie une image/gif de panda'},
+            { name: prefix + "addpanda", value: '**COMING SOON** Ajoute une image/gif de panda à la bdd de Royal'},
+        )
+        .setTimestamp()
         .setFooter(`${client.user.tag}`, ppbot)
 
     let other_embed = new Discord.MessageEmbed()
-	    .setColor('#00ff6d')
+        .setColor('#00ff6d')
         .setDescription("```HELP OTHER " + client.user.username + "```")
         .setThumbnail(ppbot)
-	    .addFields(
-	    	{ name: prefix + "invite", value: 'Invite le bot sur tes serveurs' },
+        .addFields(
+            //{ name: prefix + "invite", value: 'Invite le bot sur tes serveurs' },
             { name: prefix + "botstats", value: 'Infos sur le bot'},
             { name: prefix + "userstats <membre>", value: 'Infos sur ton compte' },
             { name: prefix + "pp <membre>", value: 'Photo de profil discord' },
             { name: prefix + "servstats", value: 'Infos sur ce serveur' },
             { name: prefix + "ping", value: 'Ping du bot' },
-	    )
-	    .setTimestamp()
+        )
+        .setTimestamp()
         .setFooter(`${client.user.tag}`, ppbot)
 
     if(message.content.startsWith(prefix + "helpmod")) {
@@ -116,122 +127,119 @@ client.on("message", async message => {
     }
 });
 
+
 // MOD COMMANDES
 client.on("message", async message => {
     if(message.content.startsWith(prefix + "kick")) {
         let messageArray = message.content.split(" ")
         let args = messageArray.slice(1)
-        if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
+        if(message.channel.type === 'dm') return message.reply('commande non réalisable par DM :no_entry_sign:');
         let kUser = message.guild.member(message.mentions.users.first());
-        if(!kUser) return message.reply("Utilisateur spécifié introuvable :thinking:");
+        if(!kUser) return message.reply("utilisateur spécifié introuvable :thinking:");
         let kReason = args.join(" ").slice(22);
         if(!kReason){var eReason = "Aucune raison spécifiée"};
-        if(!message.member.hasPermission("KICK_MEMBERS")) return message.reply("Vous n'avez pas les permissions requise pour executer cette commande :no_entry_sign:");
-        if(kUser.hasPermission('KICK_MEMBERS')) return message.reply("Vous ne pouvez pas exclure cet utilisateur :hugging:");
+        //if(!message.guild.me.hasPermission("KICK_MEMBERS")) return message.reply("je n'ai pas les permissions nécessaires, demande au propriétaire du serveur de me les rajouter :disappointed_relieved:");
+        if(!message.member.hasPermission("KICK_MEMBERS")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:");
+        if(kUser.id === client.user.id) return message.reply("bien tenté, mais non ! :stuck_out_tongue_closed_eyes:");
+        if(message.author.id === client.user.id) return message.channel.send("bien tenté, mais non ! :stuck_out_tongue_closed_eyes:");
+        if(kUser.hasPermission('KICK_MEMBERS')) return message.reply("vous ne pouvez pas exclure cet utilisateur :hugging:");
         message.guild.member(kUser).kick(kReason || eReason).then( msg => {
             message.channel.send(`:white_check_mark: Utilisateur exclu avec succès`);
         });
+       let kickEmbed = new Discord.MessageEmbed()
+       .setTitle("Rapport d'exclusion")
+       .setColor("RANDOM")
+       .setFooter("by Safe", client.user.avatarURL)
+       .addField("Utilisateur exclu", `${kUser} (ID : ${kUser.id})`)
+       .addField("Exclu par", `<@${message.author.id}> (ID : ${message.author.id})`)
+       .addField("Exclu dans", message.channel)
+       .addField("Exclu à", message.createdAt)
+       .addField("Raison", kReason || eReason);
+       client.channels.cache.get(idLogs).send(kickEmbed)
     };
 
     if(message.content.startsWith(prefix + "ban")) {
         let messageArray = message.content.split(" ")
         let args = messageArray.slice(1)
-        if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
+        if(message.channel.type === 'dm') return message.reply('commande non réalisable par DM :no_entry_sign:');
         let bUser = message.guild.member(message.mentions.users.first());
-        if(!bUser) return message.reply("Utilisateur spécifié introuvable :thinking:");
+        if(!bUser) return message.reply("utilisateur spécifié introuvable :thinking:");
         let bReason = args.join(" ").slice(22);
         if(!bReason){var eReason = "Aucune raison spécifiée"};
-        if(!message.member.hasPermission("BAN_MEMBERS")) return message.reply("Vous n'avez pas les permissions requise pour executer cette commande :no_entry_sign:");
-        if(bUser.hasPermission('BAN_MEMBERS')) return message.reply("Vous ne pouvez pas bannir cet utilisateur :hugging:");
+        //if(!message.guild.me.hasPermission("BAN_MEMBERS")) return message.reply("je n'ai pas les permissions nécessaires, demande au propriétaire du serveur de me les rajouter :disappointed_relieved:");
+        if(!message.member.hasPermission("BAN_MEMBERS")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:");
+        if(bUser.id === client.user.id) return message.reply("bien tenté, mais non ! :stuck_out_tongue_closed_eyes:");
+        if(message.author.id === client.user.id) return message.channel.send("bien tenté, mais non ! :stuck_out_tongue_closed_eyes:");
+        if(bUser.hasPermission('BAN_MEMBERS')) return message.reply("vous ne pouvez pas bannir cet utilisateur :hugging:");
         let reason = bReason || eReason;
         message.guild.members.ban(bUser, {reason}).then( msg => {
             message.channel.send(`:white_check_mark: Utilisateur banni avec succès`);
         });
+       let banEmbed = new Discord.MessageEmbed()
+       .setTitle("Rapport de bannisement")
+       .setColor("RANDOM")
+       .addField("Utilisateur banni", `${bUser} (ID : ${bUser.id})`)
+       .setFooter("by Safe", client.user.avatarURL)
+       .addField("Banni par", `<@${message.author.id}> (ID : ${message.author.id})`)
+       .addField("Banni dans", message.channel)
+       .addField("Banni à", message.createdAt)
+       .addField("Raison", bReason || eReason);
+       client.channels.cache.get(idLogs).send(banEmbed)
     };
 
     if(message.content.startsWith(prefix + "clear")) {
         let messageArray = message.content.split(" ");
         let args = messageArray.slice(1);
-        if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
+        if(message.channel.type === 'dm') return message.reply('commande non réalisable par DM :no_entry_sign:');
         let nb = parseInt(args[0]) + 1;
-        if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous n'avez pas les permissions requise pour executer cette commande :no_entry_sign:");
-        if(!args[0]) return message.reply(`Veuillez préciser le nombre de messages a supprimer \n Commande : **${prefix}clear <nombre de messages>**`);
-        if(nb <= 1 || nb > 100) return message.reply("Veuillez indiquer un nombre compris entre 1 et 99")
+        //if(!message.guild.me.hasPermission("MANAGE_MESSAGES")) return message.reply("je n'ai pas les permissions nécessaires, demande au propriétaire du serveur de me les rajouter :disappointed_relieved:");
+        if(message.author.id === client.user.id) return message.channel.send("bien tenté, mais non ! :stuck_out_tongue_closed_eyes:");
+        if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:");
+        if(!args[0]) return message.reply(`veuillez préciser le nombre de messages a supprimer \n Commande : **${prefix}clear <nombre de messages>**`);
+        if(nb <= 1 || nb > 100) return message.reply("veuillez indiquer un nombre compris entre 1 et 99")
         message.channel.bulkDelete(nb, true).catch(err => {
-            message.reply(":confused: Erreur de syntaxe avec la commande clear");
+            message.reply(":confused: erreur de syntaxe avec la commande clear");
         });
-        message.channel.send(`:white_check_mark: \`${nb}\` message(s) ont été supprimé(s) (sauf ceux plus de 2 semaines)`);
+        message.channel.send(`:white_check_mark: \`${args}\` message(s) ont été supprimé(s) (sauf ceux plus de 2 semaines)`);
+       let clearEmbed = new Discord.MessageEmbed()
+       .setTitle(`Rapport de suppression`)
+       .setDescription(`Auteur de la suppression : ` + `<@${message.author.id}> (ID : ${message.author.id})`)
+       .addField("Nombre de messages supprimés : ", args)
+       .addField("Commande effectué dans ", message.channel)
+       .addField("Commande effectué le ", message.createdAt)
+       .setFooter("by Safe", client.user.avatarURL)
+       .setColor('RANDOM')
+       client.channels.cache.get(idLogs).send(clearEmbed);
     };
-
     
+    /*
     if(message.content.startsWith(prefix + "mute")) {
         let messageArray = message.content.split(" ")
         let args = messageArray.slice(1)
         if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
         let mUser = message.guild.member(message.mentions.users.first());
         if(!mUser) return message.reply("Utilisateur spécifié introuvable :thinking:");
+        if(message.author.id === mUser.user.id) return message.reply("Tu ne peux pas te mute toi même :x:");
         let mReason = args.join(" ").slice(22);
         if(!mReason){var eReason = "Aucune raison spécifiée"};
         if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous n'avez pas la permissions requise pour executer cette commande :no_entry_sign:");
         let reason = mReason || eReason;
-
         let role = message.guild.roles.cache.find(r => r.name === "Mute member");
-
-        //if(message.member.roles.cache.some(r=>["Mute member"].includes(r.name))) return message.reply("Cet utilisateur est déja muté :zipper_mouth:");
         if(!role){
-            try {
-                role = await message.guild.roles.create({
-                    name: "Mute member",
-                    color:"#ff1000",
-                    permissions:['SEND_MESSAGES', 'ADD_REACTIONS']
-                });
-                message.guild.channels.cache.forEach(async (channel, id) => {
-                    await channel.overwritePermissions(role, {
-                        SEND_MESSAGES: false,
-                        ADD_REACTIONS: false
-                    });
-                });
-            } catch (e) {
-                console.log(e.stack)
-            }
+            role = message.guild.roles.create({
+                data: {
+                    name: 'Mute member',
+                    color: '#ff1000',
+                    permissions: 'VIEW_CHANNEL'
+                },
+                reason: "Création role pour les personnes mute",
+            })
+            message.channel.updateOverwrite(role, { SEND_MESSAGES: false });
         }
-        //if(mUser.roles.has(role.id)) return message.reply("Cet utilisateur est déja muté :zipper_mouth:");
-        await(mUser.addRole(role));
+        if(mUser.roles.has(role.id)) return message.reply("Cet utilisateur est déja muté :zipper_mouth:");
+        await(mUser.roles.add(role));
         message.channel.send(`L'utilisateur : **${mUser}** a été mute :zipper_mouth:`);
     };
-    
-
-    /*
-    if(message.content.startsWith(prefix + "mute")){
-        let messageArray = message.content.split(" ");
-        let args = messageArray.slice(1);
-        if(message.channel.type === 'dm') return message.reply('Commande non réalisable par DM :no_entry_sign:');
-        if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous n'avez pas la permissions requise pour executer cette commande :no_entry_sign:");
-        let toMute = message.guild.member(message.mentions.users.first());
-        if(!toMute) return message.reply("Utilisateur spécifié introuvable :thinking:");
-        let role = message.guild.roles.cache.find(r => r.name === "Mute member");
-        if(!role){
-            try {
-                role = await message.guild.roles.create({
-                    name: "Mute member",
-                    color:"#ff1000",
-                    permissions:['SEND_MESSAGES', 'ADD_REACTIONS']
-                });
-                message.guild.channels.forEach(async (channel, id) => {
-                    await channel.overwritePermissions(role, {
-                        SEND_MESSAGES: false,
-                        ADD_REACTIONS: false
-                    });
-                });
-            } catch (e) {
-                console.log(e.stack)
-            }
-        }
-        if(toMute.roles.has(role.id)) return message.reply("Cet utilisateur est déja muté :zipper_mouth:");
-        await(toMute.addRole(role));
-        message.channel.send(`L'utilisateur : **${toMute}** a été mute :zipper_mouth:`);
-    };
-    */
 
     /*
     if(message.content.startsWith(prefix + "unmute")){
@@ -266,26 +274,96 @@ client.on("message", async message => {
     };
     */
 
-   if(message.content.startsWith(prefix + "dm")) {
+    if(message.content.startsWith(prefix + "dm")) {
+        let messageArray = message.content.split(" ")
+        let args = messageArray.slice(1)
+        let dmUser = message.guild.member(message.mentions.users.first());
+        if (!dmUser) return message.reply("utilisateur spécifié introuvable :thinking::thinking:");
+        //if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:")
+        let dMessage = args.join(" ").slice(22);
+        message.delete();
+        if(dMessage.length < 1) return message.reply("veullez entrer un message")
+        
+        if(message.author.id === client.user.id) return message.channel.send("bien tenté, mais non ! :stuck_out_tongue_closed_eyes:");
+        
+        dmUser.send(`__${dmUser}, quelqu'un vous a envoyé un message:__`).catch(error => {
+            //confirm = false;
+            //message.author.send(":x: `ton message n'a pas été envoyé. Cela arrive si la personne a bloqué les DM venant de ce serveur, a bloqué le bot ou encore s'il s'agit d'un autre bot.`").catch(error => {
+            //    message.reply(`:x: :x:` + confirm);
+            //});
+        });
+        let dm_embed = new Discord.MessageEmbed()
+            .setDescription(`${dMessage}`)
+            .setColor("RANDOM")
+            .setTimestamp()
+        dmUser.send(dm_embed).catch( error => {
+            //console.log("ERROR 1 : " + error);
+        });
+        message.author.send(":white_check_mark: `message envoyé avec succès à `" + `${dmUser}`).catch(error => {
+            //message.reply(`:white_check_mark: :white_check_mark:`);
+        });
+        
+        /*
+        var confirm = true;
+        dmUser.send(`__${dmUser}, quelqu'un vous a envoyé un message:__`).catch(error => {
+            confirm = false;
+            message.author.send(":x: `ton message n'a pas été envoyé. Cela arrive si la personne a bloqué les DM venant de ce serveur, a bloqué le bot ou encore s'il s'agit d'un autre bot.`").catch(error => {
+                message.reply(`:x: :x:` + confirm);
+            });
+        });
+        if(confirm) {
+            let dm_embed = new Discord.MessageEmbed()
+                .setDescription(`${dMessage}`)
+                .setColor("RANDOM")
+                .setTimestamp()
+            dmUser.send(dm_embed).catch( error => {
+                console.log("ERROR 1 : " + error);
+            });
+            message.author.send(":white_check_mark: `message envoyé avec succès à `" + `${dmUser}`).catch(error => {
+                message.reply(`:white_check_mark: :white_check_mark:`);
+            });
+        }
+        */
+    }
+
     let messageArray = message.content.split(" ")
     let args = messageArray.slice(1)
-    let dmUser = message.guild.member(message.mentions.users.first());
-    if (!dmUser) return message.reply("Utilisateur spécifié introuvable :thinking::thinking:");
-    if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous n'avez pas les permissions requise pour executer cette commande :no_entry_sign:")
-    let dMessage = args.join(" ").slice(22);
-    if(dMessage.length < 1) return message.reply("Veullez entrer un message")
-    dmUser.send(`__${dmUser}, quelqu'un vous a envoyé un message:__`)
-    var dm_embed = new Discord.MessageEmbed()
-        .setDescription(`${dMessage}`)
-        .setColor("RANDOM")
-        .setTimestamp()
-    dmUser.send(dm_embed);
-    message.author.send(`Message envoyé avec succès à ${dmUser}`)
-}
+    if(message.content.startsWith(prefix + "say")) {
+        let question = args.slice(0).join(" ");
+        //if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:");
+        message.delete();
+        message.channel.send(question);
+    }
+
+    if(message.content.startsWith(prefix + "statue")) {
+        let messageArray = message.content.split(" ")
+        let args = messageArray.slice(1)
+        let text = args.slice(0).join(" ");
+        message.delete();
+        if (!args[0]) return message.channel.send("Statue vide :confused:")
+        if (text.length > 117) return message.channel.send("Statue trop long (117 caractères max)")
+        if(message.author.id === client.user.id) return message.reply("bien tenté, mais non ! :stuck_out_tongue_closed_eyes:");
+        if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:");
+        statuePerso = text;
+        let statueEmbed = new Discord.MessageEmbed()
+            .setTitle("Changement de statue")
+            .setColor("RANDOM")
+            .addField("Ancien statue", ancienStatue)
+            .addField("Nouveau statue", statuePerso)
+            .setFooter("by Safe", client.user.avatarURL)
+            .addField("Changé par", `<@${message.author.id}> (ID : ${message.author.id})`)
+            .addField("Changé dans", message.channel)
+            .addField("Changé le", message.createdAt)
+            client.channels.cache.get(idLogs).send(statueEmbed)
+        message.channel.send(":white_check_mark: Le statue du bot a été changé avec succès. (synchronisation dans 15s)");
+        ancienStatue = text;
+    }
 });
+
 
 // OTHER COMMANDES
 client.on("message", async message => {
+    /*
     if(message.content === prefix + "invite") {
         let invite_embed = new Discord.MessageEmbed()
             .setTitle("**Invite le bot sur un de tes serveurs**")
@@ -294,6 +372,7 @@ client.on("message", async message => {
             .setFooter(`${client.user.tag}`, ppbot)
         message.channel.send(invite_embed)
     }
+    */
 
     if(message.content === prefix + "botstats") {
         function conversion_seconde_heure() {
@@ -374,7 +453,7 @@ client.on("message", async message => {
         let pp_embed = new Discord.MessageEmbed()
             .setColor(0x333333)
             .setAuthor(user.username)
-            .setImage(user.avatarURL());
+            .setImage(user.avatarURL({ format: 'png', dynamic: true, size: 1024 }));
         message.channel.send(pp_embed);
     }
 
@@ -411,7 +490,7 @@ client.on("message", async message => {
         .setFooter(`${client.user.tag}`, ppbot)
         .setTimestamp()
         .addField(`Latence actuelle de ${client.user.username} :`, ping + ` ms`)
-        .addField(`Latence de l'API :`, client.ws.ping + " ms")
+        .addField(`Latence de l'API Discord :`, client.ws.ping + " ms")
         message.channel.send(ping_embed)
     }
 });
@@ -434,4 +513,90 @@ client.on("message", async message => {
             .setColor("RANDOM")
         message.channel.send(ball_embed)
     }
+
+    if(message.content.startsWith(prefix + 'ddos')) {
+        const user = message.mentions.users.first() || message.author;
+        message.channel.send("``Starting the DDOS script``").then(async message => {
+            setTimeout(() => {
+                message.edit("``FINISH``");
+            }, 22000);
+        });
+        message.channel.send("```python\npy hammer.py -s " + user + " -t 500```").then(async message => {
+            setTimeout(() => {
+                message.edit(':hourglass_flowing_sand: ░░░░░░░░░░ 0%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass: ▓▓░░░░░░░░ 20%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass_flowing_sand: ▓▓░░░░░░░░ 20%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass: ▓▓▓▓░░░░░░ 40%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass_flowing_sand: ▓▓▓▓░░░░░░ 40%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass: ▓▓▓▓▓▓░░░░ 60%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass_flowing_sand: ▓▓▓▓▓▓░░░░ 60%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass: ▓▓▓▓▓▓░░░░ 60%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass_flowing_sand: ▓▓▓▓▓▓▓▓░░ 80%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass: ▓▓▓▓▓▓▓▓░░ 80%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass_flowing_sand: ▓▓▓▓▓▓▓▓░░ 80%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass: ▓▓▓▓▓▓▓▓▓▓ 100%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass_flowing_sand: ▓▓▓▓▓▓▓▓▓▓ 100%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass: ▓▓▓▓▓▓▓▓▓▓ 100%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(':hourglass_flowing_sand: ▓▓▓▓▓▓▓▓▓▓ 100%');
+            }, 1000);
+            setTimeout(() => {
+                message.edit(`**DDOS de ${user} en cours !`);
+            }, 4000);
+            setTimeout(() => {
+                message.edit(`✅ DDOS de ${user} terminé !`);
+            }, 4000);
+        });
+    };
+
+    if(message.content.startsWith(prefix + "compatible")) {
+        let messageArray = message.content.split(" ")
+        let args = messageArray.slice(1)
+        let lUser = message.guild.member(message.mentions.users.first());
+        const love = Math.round(Math.random() * 100);
+        let typeHeart;
+        if(love < 20) {typeHeart = ":broken_heart:"}
+        else if(love > 19 && love < 50) {typeHeart = ":orange_heart:"}
+        else if(love > 49 && love < 80) {typeHeart = ":heart:"}
+        else {typeHeart = ":sparkling_heart:"}
+        if(!lUser) return message.reply("utilisateur spécifié introuvable :thinking:");
+        let love_embed2 = new Discord.MessageEmbed()
+            .setDescription(`Tu t'aimes à ${love}% ${typeHeart}`)
+            .setImage(lUser.user.displayAvatarURL({ format: 'png', dynamic: true, size: 128 }))
+            .setColor("#ff0000")
+        if(message.author.id === lUser.id) return message.channel.send(love_embed2);
+        if(lUser.id === client.user.id) return message.reply("Je ne t'aime pas, désolé :broken_heart: ");
+        let love_embed1 = new Discord.MessageEmbed()
+            .setDescription(`<@${message.author.id}> est compatible avec <@${lUser.id}> à ${love}% ${typeHeart}`)
+            .setImage(lUser.user.displayAvatarURL({ format: 'png', dynamic: true, size: 128 }))
+            .setColor("#ff0000")
+        message.channel.send(love_embed1)
+    };
 });
