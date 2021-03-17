@@ -604,10 +604,9 @@ client.on("message", async message => {
     if(message.content.startsWith(prefix + "note")) {
         let messageArray = message.content.split(" ")
         let args = messageArray.slice(1)
-        const nUser = message.mentions.users.first() || message.author;
-        let matière = args.join(" ").slice(22);
+        let matière = args.slice(0).join(" ");
         if (!matière) return message.channel.send("Matière manquante :confused:")
         const note = Math.round(Math.random() * 10);
-        message.channel.send(`La note de <@${nUser}> **${matière}** est de ${note}/20`);
+        message.channel.send(`La note de ${nUser} **${matière}** est de ${note}/20`);
     }
 });
