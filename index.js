@@ -89,6 +89,7 @@ client.on("message", async message => {
             { name: prefix + "8ball <question>", value: 'Le bot répond à te question'},
             { name: prefix + "ddos <membre>", value: 'DDOS une personne'},
             { name: prefix + "compatible <membre>", value: 'Calcul la compatibilité avec une personne'},
+            { name: prefix + "note <matière>", value: 'Calcul ta note'},
             { name: prefix + "pfpc", value: '**COMING SOON** Pierre Feuille Papier Ciseau'},
             { name: prefix + "sendpanda", value: '**COMING SOON** Envoie une image/gif de panda'},
             { name: prefix + "addpanda", value: '**COMING SOON** Ajoute une image/gif de panda à la bdd de Royal'},
@@ -599,4 +600,13 @@ client.on("message", async message => {
             .setColor("#ff0000")
         message.channel.send(love_embed1)
     };
+
+    if(message.content.startsWith(prefix + "note")) {
+        let messageArray = message.content.split(" ")
+        let args = messageArray.slice(1)
+        const nUser = message.mentions.users.first() || message.author;
+        let matière = args.join(" ").slice(22);
+        const note = Math.round(Math.random() * 10);
+        message.channel.send(`La note de <@${nUser}> **${matière}** est de ${note}/20`);
+    }
 });
