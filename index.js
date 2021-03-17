@@ -69,17 +69,17 @@ client.on("message", async message => {
         .setDescription("```HELP MODÉRATION " + client.user.username + "```")
         .setThumbnail(ppbot)
         .addFields(
-            { name: prefix + "kick <membre> <raison>", value: 'Exclu un membre' },
-            { name: prefix + "ban <membre> <raison>", value: 'Banni un membre' },
+            { name: prefix + "kick <membre> [raison]", value: 'Exclu un membre' },
+            { name: prefix + "ban <membre> [raison]", value: 'Banni un membre' },
             { name: prefix + "clear <nombre de massage>", value: 'Efface un certain nombre de messages' },
-            //{ name: prefix + "mute <membre> <raison>", value: 'Mute un membre' },
-            //{ name: prefix + "unmute <membre> <raison>", value: 'Démute un membre' },
+            //{ name: prefix + "mute <membre> [raison]", value: 'Mute un membre' },
+            //{ name: prefix + "unmute <membre> [raison]", value: 'Démute un membre' },
             { name: prefix + "dm <membre> <message>", value: 'Envoie un message en DM à un membre' },
             { name: prefix + "say <message>", value: 'Fait parler le bot' },
             { name: prefix + "statue <message>", value: '**BETA** Change le statue du bot' },
         )
         .setTimestamp()
-        .setFooter(`${client.user.tag}`, ppbot)
+        .setFooter(`<> obligatoire | [] facultatif`, ppbot)
 
     let fun_embed = new Discord.MessageEmbed()
         .setColor('#ff00ec')
@@ -87,7 +87,7 @@ client.on("message", async message => {
         .setThumbnail(ppbot)
         .addFields(
             { name: prefix + "8ball <question>", value: 'Le bot répond à te question'},
-            { name: prefix + "ddos <membre>", value: 'DDOS une personne'},
+            { name: prefix + "ddos [membre]", value: 'DDOS une personne'},
             { name: prefix + "compatible <membre>", value: 'Calcul la compatibilité avec une personne'},
             { name: prefix + "note <matière>", value: 'Calcul ta note'},
             { name: prefix + "pfpc", value: '**COMING SOON** Pierre Feuille Papier Ciseau'},
@@ -95,7 +95,7 @@ client.on("message", async message => {
             { name: prefix + "addpanda", value: '**COMING SOON** Ajoute une image/gif de panda à la bdd de Royal'},
         )
         .setTimestamp()
-        .setFooter(`${client.user.tag}`, ppbot)
+        .setFooter(`<> obligatoire | [] facultatif`, ppbot)
 
     let other_embed = new Discord.MessageEmbed()
         .setColor('#00ff6d')
@@ -104,13 +104,13 @@ client.on("message", async message => {
         .addFields(
             //{ name: prefix + "invite", value: 'Invite le bot sur tes serveurs' },
             { name: prefix + "botstats", value: 'Infos sur le bot'},
-            { name: prefix + "userstats <membre>", value: 'Infos sur ton compte' },
-            { name: prefix + "pp <membre>", value: 'Photo de profil discord' },
+            { name: prefix + "userstats [membre]", value: 'Infos sur ton compte' },
+            { name: prefix + "pp [membre]", value: 'Photo de profil discord' },
             { name: prefix + "servstats", value: 'Infos sur ce serveur' },
             { name: prefix + "ping", value: 'Ping du bot' },
         )
         .setTimestamp()
-        .setFooter(`${client.user.tag}`, ppbot)
+        .setFooter(`<> obligatoire | [] facultatif`, ppbot)
 
     if(message.content.startsWith(prefix + "helpmod")) {
         message.channel.send(mod_embed);
