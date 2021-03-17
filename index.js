@@ -89,7 +89,7 @@ client.on("message", async message => {
             { name: prefix + "8ball <question>", value: 'Le bot répond à te question'},
             { name: prefix + "ddos <membre>", value: 'DDOS une personne'},
             { name: prefix + "compatible <membre>", value: 'Calcul la compatibilité avec une personne'},
-            { name: prefix + "note <membre> <matière>", value: 'Calcul ta note'},
+            { name: prefix + "note <matière>", value: 'Calcul ta note'},
             { name: prefix + "pfpc", value: '**COMING SOON** Pierre Feuille Papier Ciseau'},
             { name: prefix + "sendpanda", value: '**COMING SOON** Envoie une image/gif de panda'},
             { name: prefix + "addpanda", value: '**COMING SOON** Ajoute une image/gif de panda à la bdd de Royal'},
@@ -606,7 +606,7 @@ client.on("message", async message => {
         let args = messageArray.slice(1)
         let matière = args.slice(0).join(" ");
         if (!matière) return message.channel.send("Matière manquante :confused:")
-        const note = Math.round(Math.random() * 10);
-        message.channel.send(`La note de ${nUser} **${matière}** est de ${note}/20`);
+        const note = Math.round(Math.random() * 20);
+        message.channel.send(`La note de <@${message.author.id}> en **${matière}** est de ${note}/20`);
     }
 });
