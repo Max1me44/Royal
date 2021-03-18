@@ -19,8 +19,8 @@ Ce bot utilise principalement l'API discord pour fonctionner.
 * [OS-Utils](https://www.npmjs.com/package/node-os-utils) - API surveillance des signes vitaux du serveur
 
 ## Versions
-**Dernière version stable :** 1.2  
-**Dernière version :** 1.2  
+**Dernière version stable :** 1.3  
+**Dernière version :** 1.3  
 Liste des versions : [liste des versions](https://github.com/CarqueMax/Royal/tags)
 
 ## Auteurs
