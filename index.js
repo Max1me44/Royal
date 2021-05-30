@@ -10,6 +10,7 @@ const prefix = config.prefix;
 const versionBot = config.version;
 const osu = require('node-os-utils');
 let memoryUsage = process.memoryUsage().heapUsed / 1024 / 1024;
+//const DIG = require('discord-image-generation');
 const ppbot = "https://i.ibb.co/VQs1mbF/Royal-Logo.png";
 const idLogs = "816637842922405948";
 let statuePerso = prefix + "help";
@@ -31,7 +32,7 @@ const types_list = [
     "WATCHING", 
 ];
 client.on('ready', () => {
-    console.log(`${client.user.tag} est connecté ✔ - ${client.users.cache.size} membres, dans ${client.channels.cache.size} channels de ${client.guilds.cache.size} serveurs défférents`);
+    console.log(`${client.user.tag} est connecté ✔ - ${client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)} membres, dans ${client.channels.cache.size} channels de ${client.guilds.cache.size} serveurs défférents`);
     setInterval(() => {
         const random1 = Math.floor(Math.random() * activities_list.length);
         const random2 = Math.floor(Math.random() * types_list.length);
@@ -43,7 +44,8 @@ client.on('ready', () => {
     }, 20000); // 20 secondes
 })
 
-
+let spam = false;
+let msgSpam = "";
 
 
 // HELP COMMANDES
@@ -90,9 +92,41 @@ client.on("message", async message => {
             { name: prefix + "ddos [membre]", value: 'DDOS une personne' },
             { name: prefix + "compatible <membre>", value: 'Calcul la compatibilité avec une personne' },
             { name: prefix + "note <matière>", value: 'Calcul ta note' },
+            { name: prefix + "helpavatar", value: '**COMING SOON** Liste des commandes pour modifier ta pp' },
             { name: prefix + "pfpc", value: '**COMING SOON** Pierre Feuille Papier Ciseau' },
-            { name: prefix + "sendpanda", value: '**COMING SOON** Envoie une image/gif de panda' },
-            { name: prefix + "addpanda", value: '**COMING SOON** Ajoute une image/gif de panda à la bdd de Royal' },
+            //{ name: prefix + "sendpanda", value: '**COMING SOON** Envoie une image/gif de panda' },
+            //{ name: prefix + "addpanda", value: '**COMING SOON** Ajoute une image/gif de panda à la bdd de Royal' },
+        )
+        .setTimestamp()
+        .setFooter(`<> obligatoire | [] facultatif`, ppbot)
+    
+    let avatar_embed = new Discord.MessageEmbed()
+        .setColor('#019db1')
+        .setDescription("```HELP AVATAR " + client.user.username + "```")
+        .setThumbnail(ppbot)
+        .addFields(
+            { name: prefix + "flou <pourcentage> [membre]", value: 'Avatar flou' },
+            { name: prefix + "gay [membre]", value: 'Avatar gay' },
+            { name: prefix + "black [membre]", value: 'Avatar en noir et blanc' },
+            { name: prefix + "inversed [membre]", value: 'Avatar avec couleurs inversées' },
+            { name: prefix + "sepia [membre]", value: 'Avatar en couleur sépia' },
+            { name: prefix + "triggered [membre]", value: 'Avatar trigger' },
+            { name: prefix + "pub [membre]", value: 'Avatar dans une pub' },
+            { name: prefix + "affect [membre]", value: 'meme' },
+            { name: prefix + "beautiful [membre]", value: 'meme' },
+            { name: prefix + "bobross [membre]", value: 'meme' },
+            { name: prefix + "confusedstonk [membre]", value: 'meme' },
+            { name: prefix + "delete [membre]", value: 'meme' },
+            { name: prefix + "jail [membre]", value: 'Tu reviendras pas de ci-tôt' },
+            { name: prefix + "karaba [membre]", value: 'Karaba la sorcière !!!' },
+            { name: prefix + "presentation <texte>", value: 'Présente tes idées à la population' },
+            { name: prefix + "notstonk [membre]", value: 'meme' },
+            { name: prefix + "poutine [membre]", value: 'meme' },
+            { name: prefix + "rip [membre]", value: 'meme' },
+            { name: prefix + "stonk [membre]", value: 'meme' },
+            { name: prefix + "tatoo [membre]", value: 'meme' },
+            { name: prefix + "thomas [membre]", value: 'Thomas le train 🚂' },
+            { name: prefix + "trash [membre]", value: 'meme' },
         )
         .setTimestamp()
         .setFooter(`<> obligatoire | [] facultatif`, ppbot)
@@ -119,6 +153,9 @@ client.on("message", async message => {
     if(message.content.startsWith(prefix + "helpfun")) {
         message.channel.send(fun_embed);
     }
+    if(message.content.startsWith(prefix + "helpavatar")) {
+        message.channel.send(avatar_embed);
+    }
     if(message.content.startsWith(prefix + "helpother")) {
         message.channel.send(other_embed);
     }
@@ -132,6 +169,13 @@ client.on("message", async message => {
 
 // MOD COMMANDES
 client.on("message", async message => {
+    if(message.content === prefix + 'restart') {
+  		  if(message.author.id !== '398863083176722432') return;
+  		  message.reply('Restarted 🔄').then(() => {
+  			    process.exit(1);
+		    })
+	  };
+	
     if(message.content.startsWith(prefix + "kick")) {
         let messageArray = message.content.split(" ")
         let args = messageArray.slice(1)
@@ -139,7 +183,7 @@ client.on("message", async message => {
         let kUser = message.guild.member(message.mentions.users.first());
         if(!kUser) return message.reply("utilisateur spécifié introuvable :thinking:");
         let kReason = args.join(" ").slice(22);
-        if(!kReason){var eReason = "Aucune raison spécifiée"};
+        if(!kReason){let eReason = "Aucune raison spécifiée"};
         //if(!message.guild.me.hasPermission("KICK_MEMBERS")) return message.reply("je n'ai pas les permissions nécessaires, demande au propriétaire du serveur de me les rajouter :disappointed_relieved:");
         if(!message.member.hasPermission("KICK_MEMBERS")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:");
         if(kUser.id === client.user.id) return message.reply("bien tenté, mais non ! :stuck_out_tongue_closed_eyes:");
@@ -167,7 +211,7 @@ client.on("message", async message => {
         let bUser = message.guild.member(message.mentions.users.first());
         if(!bUser) return message.reply("utilisateur spécifié introuvable :thinking:");
         let bReason = args.join(" ").slice(22);
-        if(!bReason){var eReason = "Aucune raison spécifiée"};
+        if(!bReason){let eReason = "Aucune raison spécifiée"};
         //if(!message.guild.me.hasPermission("BAN_MEMBERS")) return message.reply("je n'ai pas les permissions nécessaires, demande au propriétaire du serveur de me les rajouter :disappointed_relieved:");
         if(!message.member.hasPermission("BAN_MEMBERS")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:");
         if(bUser.id === client.user.id) return message.reply("bien tenté, mais non ! :stuck_out_tongue_closed_eyes:");
@@ -194,11 +238,12 @@ client.on("message", async message => {
         let args = messageArray.slice(1);
         if(message.channel.type === 'dm') return message.reply('commande non réalisable par DM :no_entry_sign:');
         let nb = parseInt(args[0]) + 1;
+        if(isNaN(nb)) return message.reply("veuillez indiquer un nombre compris entre 1 et 99");
         //if(!message.guild.me.hasPermission("MANAGE_MESSAGES")) return message.reply("je n'ai pas les permissions nécessaires, demande au propriétaire du serveur de me les rajouter :disappointed_relieved:");
         if(message.author.id === client.user.id) return message.channel.send("bien tenté, mais non ! :stuck_out_tongue_closed_eyes:");
         if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:");
         if(!args[0]) return message.reply(`veuillez préciser le nombre de messages a supprimer \n Commande : **${prefix}clear <nombre de messages>**`);
-        if(nb <= 1 || nb > 100) return message.reply("veuillez indiquer un nombre compris entre 1 et 99")
+        if(nb <= 1 || nb > 100) return message.reply("veuillez indiquer un nombre compris entre 1 et 99");
         message.channel.bulkDelete(nb, true).catch(err => {
             message.reply(":confused: erreur de syntaxe avec la commande clear");
         });
@@ -225,7 +270,7 @@ client.on("message", async message => {
         if(!mUser) return message.reply("Utilisateur spécifié introuvable :thinking:");
         if(message.author.id === mUser.user.id) return message.reply("Tu ne peux pas te mute toi même :x:");
         let mReason = args.join(" ").slice(22);
-        if(!mReason){var eReason = "Aucune raison spécifiée"};
+        if(!mReason){let eReason = "Aucune raison spécifiée"};
         if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Vous n'avez pas la permissions requise pour executer cette commande :no_entry_sign:");
         let reason = mReason || eReason;
         let role = message.guild.roles.cache.find(r => r.name === "Mute member");
@@ -308,7 +353,7 @@ client.on("message", async message => {
         });
         
         /*
-        var confirm = true;
+        let confirm = true;
         dmUser.send(`__${dmUser}, quelqu'un vous a envoyé un message:__`).catch(error => {
             confirm = false;
             message.author.send(":x: `ton message n'a pas été envoyé. Cela arrive si la personne a bloqué les DM venant de ce serveur, a bloqué le bot ou encore s'il s'agit d'un autre bot.`").catch(error => {
@@ -335,7 +380,11 @@ client.on("message", async message => {
     if(message.content.startsWith(prefix + "say")) {
         let question = args.slice(0).join(" ");
         if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("vous n'avez pas les permissions requises pour exécuter cette commande :no_entry_sign:");
-        message.delete();
+        message.delete().catch( error => {
+            //peux pas suppr en dm
+        });
+        if(!question) return;
+        if(question.includes('<say')) return message.reply("bonsoir non");
         message.channel.send(question);
     }
 
@@ -504,11 +553,11 @@ client.on("message", async message => {
     let messageArray = message.content.split(" ")
     let args = messageArray.slice(1)
     if(message.content.startsWith(prefix + "8ball")) {
-        if (!args[0]) return message.channel.send("Il me semble que tu as oublié de poser la question :confused:")
+        if(!args[0]) return message.channel.send("Il me semble que tu as oublié de poser la question :confused:")
         let reponse = ["D'après moi c'est oui", "C'est non", "C'est certain", "Peu probable", "Oui absolument", "Faut pas rêver", "N'y compte pas", "Concentrez vous mieux et recommencez", "Impossible", "Très probable", "Il vaut mieux ne pas répondre", "Et puis quoi encore ?", "C'est très incertain", "Sans aucun doute"];
         let random = Math.floor((Math.random() * reponse.length));
         let question = args.slice(0).join(" ");
-        if (question.length > 1024) return message.channel.send("Ta question est trop longue, repose la différemment")
+        if(question.length > 1024) return message.channel.send("Ta question est trop longue, repose la différemment")
         let ball_embed = new Discord.MessageEmbed()
             .setTitle(`**Commandes 8ball de __${message.author.tag}__**`)
             .addField("`Ta question:`", question)
@@ -613,6 +662,7 @@ client.on("message", async message => {
         message.channel.send(`La note de <@${message.author.id}> en **${matière}** est de ${note}/20`);
     }
 
+/*
     if(message.content.startsWith(prefix + "soirée")) {
         let messageArray = message.content.split(" ")
         let args = messageArray.slice(0)
@@ -647,7 +697,7 @@ client.on("message", async message => {
 		//    message.reply('pas la bonne réaction');
 	    //});
         */
-
+/*
         const Filter = (reaction, user) => user.id == message.author.id;
 
         let soirée_embed = new Discord.MessageEmbed()
@@ -670,14 +720,15 @@ client.on("message", async message => {
 	    	}
         })
     }
-
+*/
+/*
     if(message.content === prefix + "ss") {
         //message.channel.send("<:ayy:818849025435631636>");
         setInterval(function(){
-            var date = new Date();
-            var jour = date.getDay();
-            var heure = date.getHours();
-            var minutes = date.getMinutes();
+            let date = new Date();
+            let jour = date.getDay();
+            let heure = date.getHours();
+            let minutes = date.getMinutes();
             if(jour === 4) {
                 if(heure === 13) {
                     if(minutes === 0) bot.channels.get("816629376694484993").send("test 1");
@@ -695,5 +746,333 @@ client.on("message", async message => {
                 }
             }
         }, 60000);        
+    }
+*/
+});
+
+/*
+client.on("message", async message => {
+    if(message.content.startsWith(prefix + 'flou')) {
+        let messageArray = message.content.split(" ");
+        let args = messageArray.slice(1);
+        let pourcentage = parseInt(args[0]);
+        if(isNaN(pourcentage)) return message.reply("veuillez entrer un nombre");
+        if(pourcentage <= 0) return message.reply("veuillez entrer un nombre supérieur à 0");
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Blur().getImage(avatar, pourcentage);
+        let attach = new Discord.MessageAttachment(img, "flou.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'gay')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Gay().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "gay.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'black')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Greyscale().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "black.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'inversed')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Invert().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "inversed.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'sepia')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Sepia().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "sepia.png");
+        message.channel.send(attach)
+    }
+
+    // new DIG.Blink().getImage(`<Avatar>`, `<Avatar2>`.....);
+    /*
+    if(message.content.startsWith(prefix + 'triggered')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let gif = await new DIG.Triggered().getImage(avatar);
+        let attach = new Discord.MessageAttachment(gif, "triggered.gif");
+        message.channel.send(attach)
+    }
+    */
+/*
+    if(message.content.startsWith(prefix + 'triggered')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let gif = await new DIG.Triggered().getImage(avatar);
+        let attach = new Discord.MessageAttachment(gif, "triggered.gif");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'pub')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Ad().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "pub.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'affect')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Affect().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "affect.png");
+        message.channel.send(attach)
+    }
+
+    // new DIG.Batslap().getImage(`<Avatar>`, `<Avatar2>`);
+    /*
+    if(message.content.startsWith(prefix + 'affect')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Affect().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "affect.png");
+        message.channel.send(attach)
+    }
+    */
+/*
+    if(message.content.startsWith(prefix + 'beautiful')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Beautiful().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "beautiful.png");
+        message.channel.send(attach)
+    }
+
+    // new DIG.Bed().getImage(`<Avatar>`, `<Avatar2>`);
+    /*
+    if(message.content.startsWith(prefix + 'affect')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Affect().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "affect.png");
+        message.channel.send(attach)
+    }
+    */
+/*
+    if(message.content.startsWith(prefix + 'bobross')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Bobross().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "bobross.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'confusedstonk')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.ConfusedStonk().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "ConfusedStonk.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'delete')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Delete().getImage(avatar)
+        let attach = new Discord.MessageAttachment(img, "delete.png");
+        message.channel.send(attach)
+    }
+    
+    /*
+    if(message.content.startsWith(prefix + 'doublestonk')) {
+        const avatarUser1 = message.mentions.users.first() || message.author;
+        const avatarUser2 = message.mentions.users.fisrt();
+        const firstAvatar, secondAvatar;
+
+        if(!avatarUser2) {
+            firstAvatar = message.author;
+            secondAvatar = avatarUser1;
+        } else {
+            firstAvatar = avatarUser1
+            secondAvatar = avatarUser2
+        }
+
+        
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.DoubleStonk().getImage(firstAvatar, secondAvatar);
+        let attach = new Discord.MessageAttachment(img, "DoubleStonk.png");
+        message.channel.send(attach)
+    }
+    */
+/*
+    if(message.content.startsWith(prefix + 'jail')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Jail().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "jail.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'karaba')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Karaba().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "karaba.png");
+        message.channel.send(attach)
+    }
+
+    // new DIG.Kiss().getImage(`<Avatar>`, `<Avatar2>`);
+    /*
+    if(message.content.startsWith(prefix + 'affect')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Affect().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "affect.png");
+        message.channel.send(attach)
+    }
+    */
+/*
+    if(message.content.startsWith(prefix + 'presentation')) {
+        let messageArray = message.content.split(" ")
+        let args = messageArray.slice(1)
+        let text = args.slice(0).join(" ");
+        if (!text) return message.reply("Texte manquant :confused:")
+        if(text.length > 300) return message.reply("Texte trop long")
+        let img = await new DIG.LisaPresentation().getImage(text);
+        let attach = new Discord.MessageAttachment(img, "presentation.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'notstonk')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.NotStonk().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "NotStonk.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'poutine')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Poutine().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "poutine.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'rip')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Rip().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "rip.png");
+        message.channel.send(attach)
+    }
+
+    // new DIG.Spank().getImage(`<Avatar>`, `<Avatar2>`);
+    /*
+    if(message.content.startsWith(prefix + 'affect')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Affect().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "affect.png");
+        message.channel.send(attach)
+    }
+    */
+/*
+    if(message.content.startsWith(prefix + 'stonk')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Stonk().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "stonk.png");
+        message.channel.send(attach)
+    }
+    
+    if(message.content.startsWith(prefix + 'tatoo')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Tatoo().getImage(avatar)
+        let attach = new Discord.MessageAttachment(img, "tatoo.png");
+        message.channel.send(attach)
+    }
+    
+    if(message.content.startsWith(prefix + 'thomas')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Thomas().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "ThomasLeTrain.png");
+        message.channel.send(attach)
+    }
+
+    if(message.content.startsWith(prefix + 'trash')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Trash().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "trash.png");
+        message.channel.send(attach)
+    }
+
+    // new DIG.Wanted().getImage(`<Avatar>`, `<Currency>`);
+    // Currency ($, €, ...)
+    /*
+    if(message.content.startsWith(prefix + 'affect')) {
+        const avatarUser = message.mentions.users.first() || message.author;
+        let avatar = avatarUser.displayAvatarURL({ dynamic: false, format: 'png', size: 1024 });
+        let img = await new DIG.Affect().getImage(avatar);
+        let attach = new Discord.MessageAttachment(img, "affect.png");
+        message.channel.send(attach)
+    }
+    */
+/*
+})
+*/
+
+
+
+client.on('message',function(message) {
+    if(message.content.toLowerCase().includes('itarow')) {
+        message.reply('allez allez !')
+    }
+    if(message.content.toLowerCase().includes('tg')) {
+        message.reply('parle mieux stp !')
+    }
+    if(message.content.toLowerCase().includes('allez allez') && (message.author.id === '247036684732989441' || message.author.id === '222418124140445706')) {
+        message.reply('https://cdn.discordapp.com/attachments/816630656623706113/841336912899080242/58zbc4.png')
+    }
+    if(message.content.toLowerCase().includes('salut') || message.content.toLowerCase().includes('bonjour') || message.content.toLowerCase().includes('hey')) {
+        message.reply('👋')
+    }
+});
+
+client.on('message',function(message) {
+    const guild = message.guild; // Récupère la guild
+    if(!guild.available) return; // Stop si la guild n'existe pas
+    if(guild != "816626993193418775") {
+        if(message.content.startsWith(prefix + "spam")) {
+            let messageArray = message.content.split(" ")
+            let args = messageArray.slice(1);
+            msgSpam = args.slice(0).join(" ");
+            message.delete().catch( error => {
+                //peux pas suppr en dm
+            });
+            if(!msgSpam) return;
+            if(msgSpam.includes('<spam')) return message.reply("bonsoir non");
+            if(msgSpam.includes('@everyone')) return message.reply("tu as vraiment cru que t'allais spam everyone 😠");
+            spam = true;
+            message.channel.send(msgSpam);
+        }
+        
+        if(message.content.includes(msgSpam) && spam) {
+            message.channel.send(msgSpam);
+        }
+        
+        if(message.content.startsWith(prefix + "stopspam")) {
+            message.delete().catch( error => {
+                //peux pas suppr en dm
+            });
+            spam = false;
+            message.channel.send("🛑");
+        }
     }
 });

@@ -13,5 +13,8 @@
 - logs interne
 - pierre feuille papier ciseau
 
-- calendrier de soiré
+- calendrier de soirée
 - petite annonce : à un bot ou tu peux y mettre un titre, le @ discord, la description, le prix et une photo why not
+- commande traducteur
+- duel de chance, le gagnant peux ban l'autre
+- fake tweet
