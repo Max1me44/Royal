@@ -86,13 +86,13 @@ client.on("message", async message => {
         .setDescription("```HELP FUN " + client.user.username + "```")
         .setThumbnail(ppbot)
         .addFields(
-            { name: prefix + "8ball <question>", value: 'Le bot répond à te question'},
-            { name: prefix + "ddos [membre]", value: 'DDOS une personne'},
-            { name: prefix + "compatible <membre>", value: 'Calcul la compatibilité avec une personne'},
-            { name: prefix + "note <matière>", value: 'Calcul ta note'},
-            { name: prefix + "pfpc", value: '**COMING SOON** Pierre Feuille Papier Ciseau'},
-            { name: prefix + "sendpanda", value: '**COMING SOON** Envoie une image/gif de panda'},
-            { name: prefix + "addpanda", value: '**COMING SOON** Ajoute une image/gif de panda à la bdd de Royal'},
+            { name: prefix + "8ball <question>", value: 'Le bot répond à te question' },
+            { name: prefix + "ddos [membre]", value: 'DDOS une personne' },
+            { name: prefix + "compatible <membre>", value: 'Calcul la compatibilité avec une personne' },
+            { name: prefix + "note <matière>", value: 'Calcul ta note' },
+            { name: prefix + "pfpc", value: '**COMING SOON** Pierre Feuille Papier Ciseau' },
+            { name: prefix + "sendpanda", value: '**COMING SOON** Envoie une image/gif de panda' },
+            { name: prefix + "addpanda", value: '**COMING SOON** Ajoute une image/gif de panda à la bdd de Royal' },
         )
         .setTimestamp()
         .setFooter(`<> obligatoire | [] facultatif`, ppbot)
@@ -103,11 +103,12 @@ client.on("message", async message => {
         .setThumbnail(ppbot)
         .addFields(
             //{ name: prefix + "invite", value: 'Invite le bot sur tes serveurs' },
-            { name: prefix + "botstats", value: 'Infos sur le bot'},
+            { name: prefix + "botstats", value: 'Infos sur le bot' },
             { name: prefix + "userstats [membre]", value: 'Infos sur ton compte' },
             { name: prefix + "pp [membre]", value: 'Photo de profil discord' },
             { name: prefix + "servstats", value: 'Infos sur ce serveur' },
             { name: prefix + "ping", value: 'Ping du bot' },
+            { name: prefix + "soirée <desciption> <date>", value: '**BETA** propose et organise une soirée' },
         )
         .setTimestamp()
         .setFooter(`<> obligatoire | [] facultatif`, ppbot)
@@ -201,16 +202,18 @@ client.on("message", async message => {
         message.channel.bulkDelete(nb, true).catch(err => {
             message.reply(":confused: erreur de syntaxe avec la commande clear");
         });
-        message.channel.send(`:white_check_mark: \`${args}\` message(s) ont été supprimé(s) (sauf ceux plus de 2 semaines)`);
-       let clearEmbed = new Discord.MessageEmbed()
-       .setTitle(`Rapport de suppression`)
-       .setDescription(`Auteur de la suppression : ` + `<@${message.author.id}> (ID : ${message.author.id})`)
-       .addField("Nombre de messages supprimés : ", args)
-       .addField("Commande effectué dans ", message.channel)
-       .addField("Commande effectué le ", message.createdAt)
-       .setFooter("by Safe", client.user.avatarURL)
-       .setColor('RANDOM')
-       client.channels.cache.get(idLogs).send(clearEmbed);
+        message.channel.send(`:white_check_mark: \`${args}\` message(s) ont été supprimé(s) (sauf ceux plus de 2 semaines)\nauto-suppression de ce message dans 10 secondes`).then(msg => {
+            msg.delete({ timeout: 10000 });
+        });
+        let clearEmbed = new Discord.MessageEmbed()
+        .setTitle(`Rapport de suppression`)
+        .setDescription(`Auteur de la suppression : ` + `<@${message.author.id}> (ID : ${message.author.id})`)
+        .addField("Nombre de messages supprimés : ", args)
+        .addField("Commande effectué dans ", message.channel)
+        .addField("Commande effectué le ", message.createdAt)
+        .setFooter("by Safe", client.user.avatarURL)
+        .setColor('RANDOM')
+        client.channels.cache.get(idLogs).send(clearEmbed);
     };
     
     /*
@@ -443,7 +446,7 @@ client.on("message", async message => {
                 { name: "Créé le : ", value: user.createdAt },
                 { name: ":inbox_tray: Tu as rejoint ce serveur le : ", value: "undefined", inline: true },
             )
-            .setImage(user.avatarURL())
+            .setImage(user.avatarURL({ format: 'png', dynamic: true, size: 128 }))
             .setTimestamp()
             .setFooter(`${client.user.tag}`, ppbot)
         message.channel.send(userstats_embed);
@@ -508,8 +511,8 @@ client.on("message", async message => {
         if (question.length > 1024) return message.channel.send("Ta question est trop longue, repose la différemment")
         let ball_embed = new Discord.MessageEmbed()
             .setTitle(`**Commandes 8ball de __${message.author.tag}__**`)
-            .addField("``Ta question:``", question)
-            .addField("``Réponse:``", reponse[random])
+            .addField("`Ta question:`", question)
+            .addField("`Réponse:`", reponse[random])
             .setFooter(client.user.tag, client.user.avatarURL)
             .setColor("RANDOM")
         message.channel.send(ball_embed)
@@ -608,5 +611,89 @@ client.on("message", async message => {
         if (!matière) return message.channel.send("Matière manquante :confused:")
         const note = Math.round(Math.random() * 20);
         message.channel.send(`La note de <@${message.author.id}> en **${matière}** est de ${note}/20`);
+    }
+
+    if(message.content.startsWith(prefix + "soirée")) {
+        let messageArray = message.content.split(" ")
+        let args = messageArray.slice(0)
+        let date = args.slice(1).join(" ");
+        if(!date) return message.reply("aucune date spécifiée");
+        //let description = args.join(" ").slice(22);
+        //if(description.length < 1) return message.reply("veullez entrer une description de la soirée")
+        if(message.author.id === client.user.id) return message.channel.send("je n'aime pas organiser des soirées !!!");
+        /*
+        let soirée_embed = new Discord.MessageEmbed()
+        .setTitle(`**Proposition de soirée par __${message.author.tag}__**`)
+        .setDescription(date)
+        .addField("Date :", "none")
+        .setFooter(message.author.tag, client.user.avatarURL)
+        .setColor("RANDOM")
+    
+        const reactionMessage = await message.channel.send(soirée_embed);
+        reactionMessage.react('✅').then(() => reactionMessage.react('❌'));
+        const filter = (reaction, user) => {
+	        return ['✅', '❌'].includes(reaction.emoji.name) && user.id === message.author.id;
+        };
+        reactionMessage.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
+	    .then(collected => {
+	    	const reaction = collected.first();
+	    	if (reaction.emoji.name === '✅') {
+	    		message.reply("je t'ajoute au groupe");
+	    	} else {
+	    		message.reply('dommage, tu rates une giga soirée');
+	    	}
+	    })
+	    //.catch(collected => {
+		//    message.reply('pas la bonne réaction');
+	    //});
+        */
+
+        const Filter = (reaction, user) => user.id == message.author.id;
+
+        let soirée_embed = new Discord.MessageEmbed()
+        .setTitle(`**Proposition de soirée par __${message.author.tag}__**`)
+        .setDescription(date)
+        .addField("Date :", "none")
+        .setFooter(message.author.tag, client.user.avatarURL)
+        .setColor("RANDOM")
+
+        const reactionMessage = await message.channel.send(soirée_embed);
+
+        await reactionMessage.react('✅').then(() => reactionMessage.react('❌'));
+
+        reactionMessage.awaitReactions(Filter, {max: 1, time: 30000, errors: ["time"]}).then(collected => {
+            const reaction = collected.first();
+	    	if (reaction.emoji.name === '✅') {
+	    		message.reply("je t'ajoute au groupe");
+	    	} else {
+	    		message.reply('dommage, tu rates une giga soirée');
+	    	}
+        })
+    }
+
+    if(message.content === prefix + "ss") {
+        //message.channel.send("<:ayy:818849025435631636>");
+        setInterval(function(){
+            var date = new Date();
+            var jour = date.getDay();
+            var heure = date.getHours();
+            var minutes = date.getMinutes();
+            if(jour === 4) {
+                if(heure === 13) {
+                    if(minutes === 0) bot.channels.get("816629376694484993").send("test 1");
+                    if(minutes === 1) bot.channels.get("816629376694484993").send("test 2");
+                    if(minutes === 15) bot.channels.get("816629376694484993").send("test 3");
+                }
+                if(heure === 13) {
+                    if(minutes === 30) bot.channels.get("816629376694484993").send("test 4");
+                    if(minutes === 45) bot.channels.get("816629376694484993").send("test 5");
+                    if(minutes === 55) bot.channels.get("816629376694484993").send("test 6");
+                }
+         
+                if(heure === 18) {
+                    if(minutes === 0) bot.channels.get("816629376694484993").send("test 7");
+                }
+            }
+        }, 60000);        
     }
 });

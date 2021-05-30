@@ -12,3 +12,6 @@
 - gestion du temps avec le module moment.js
 - logs interne
 - pierre feuille papier ciseau
+
+- calendrier de soiré
+- petite annonce : à un bot ou tu peux y mettre un titre, le @ discord, la description, le prix et une photo why not
