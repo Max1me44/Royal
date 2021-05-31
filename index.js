@@ -1048,7 +1048,7 @@ client.on('message',function(message) {
 client.on('message',function(message) {
     const guild = message.guild; // Récupère la guild
     if(!guild.available) return; // Stop si la guild n'existe pas
-    if(guild != "816626993193418775") {
+    if(guild != "611563082447061005") { // IUT 
         if(message.content.startsWith(prefix + "spam")) {
             let messageArray = message.content.split(" ")
             let args = messageArray.slice(1);
