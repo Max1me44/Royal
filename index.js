@@ -12,7 +12,7 @@ const osu = require('node-os-utils');
 let memoryUsage = process.memoryUsage().heapUsed / 1024 / 1024;
 //const DIG = require('discord-image-generation');
 const ppbot = "https://i.ibb.co/VQs1mbF/Royal-Logo.png";
-const idLogs = "816637842922405948";
+//const idLogs = "816637842922405948";
 let statuePerso = prefix + "help";
 let ancienStatue = statuePerso;
 const activities_list = [
@@ -169,12 +169,35 @@ client.on("message", async message => {
 
 // MOD COMMANDES
 client.on("message", async message => {
+    function checkLogsChannel() {
+        let logs = message.guild.channels.cache.find(channel => channel.name === 'logs');
+        let ret = true;
+        if(message.guild.me.hasPermission('MANAGE_CHANNELS') && !logs) {
+            message.guild.channels.create("logs");
+            setTimeout(() => {
+                logs = message.guild.channels.cache.find(channel => channel.name === 'logs');
+                let createLogsEmbed = new Discord.MessageEmbed()
+                .setTitle("Bienvenue dans le channel logs")
+                .setDescription("Channel regroupant les actions de modération")
+                .setColor("RANDOM")
+                .setFooter("by Safe", client.user.avatarURL)
+                .addField("Crée le ", message.createdAt)
+                client.channels.cache.get(logs.id).send(createLogsEmbed);
+            }, 2000);
+        }
+        if(!message.guild.me.hasPermission('MANAGE_CHANNELS') && !logs) { 
+            message.reply("Je ne possède pas les permissions necessaire pour créer le channel `logs` :anguished:");
+            ret = false;
+        }
+        return ret;
+    }
+
     if(message.content === prefix + 'restart') {
-  		  if(message.author.id !== '398863083176722432') return;
-  		  message.reply('Restarted 🔄').then(() => {
-  			    process.exit(1);
-		    })
-	  };
+  		if(message.author.id !== '398863083176722432') return;
+  		message.reply('Restarted 🔄').then(() => {
+  			process.exit(1);
+		})
+	};
 	
     if(message.content.startsWith(prefix + "kick")) {
         let messageArray = message.content.split(" ")
@@ -192,16 +215,21 @@ client.on("message", async message => {
         message.guild.member(kUser).kick(kReason || eReason).then( msg => {
             message.channel.send(`:white_check_mark: Utilisateur exclu avec succès`);
         });
-       let kickEmbed = new Discord.MessageEmbed()
-       .setTitle("Rapport d'exclusion")
-       .setColor("RANDOM")
-       .setFooter("by Safe", client.user.avatarURL)
-       .addField("Utilisateur exclu", `${kUser} (ID : ${kUser.id})`)
-       .addField("Exclu par", `<@${message.author.id}> (ID : ${message.author.id})`)
-       .addField("Exclu dans", message.channel)
-       .addField("Exclu à", message.createdAt)
-       .addField("Raison", kReason || eReason);
-       client.channels.cache.get(idLogs).send(kickEmbed)
+        let kickEmbed = new Discord.MessageEmbed()
+        .setTitle("Rapport d'exclusion")
+        .setColor("RANDOM")
+        .setFooter("by Safe", client.user.avatarURL)
+        .addField("Utilisateur exclu", `${kUser} (ID : ${kUser.id})`)
+        .addField("Exclu par", `<@${message.author.id}> (ID : ${message.author.id})`)
+        .addField("Exclu dans", message.channel)
+        .addField("Exclu à", message.createdAt)
+        .addField("Raison", kReason || eReason);
+        if(checkLogsChannel()) {
+            setTimeout(() => {
+                let logs = message.guild.channels.cache.find(channel => channel.name === 'logs');
+                client.channels.cache.get(logs.id).send(kickEmbed);
+            }, 3000);
+        }
     };
 
     if(message.content.startsWith(prefix + "ban")) {
@@ -221,16 +249,21 @@ client.on("message", async message => {
         message.guild.members.ban(bUser, {reason}).then( msg => {
             message.channel.send(`:white_check_mark: Utilisateur banni avec succès`);
         });
-       let banEmbed = new Discord.MessageEmbed()
-       .setTitle("Rapport de bannisement")
-       .setColor("RANDOM")
-       .addField("Utilisateur banni", `${bUser} (ID : ${bUser.id})`)
-       .setFooter("by Safe", client.user.avatarURL)
-       .addField("Banni par", `<@${message.author.id}> (ID : ${message.author.id})`)
-       .addField("Banni dans", message.channel)
-       .addField("Banni à", message.createdAt)
-       .addField("Raison", bReason || eReason);
-       client.channels.cache.get(idLogs).send(banEmbed)
+        let banEmbed = new Discord.MessageEmbed()
+        .setTitle("Rapport de bannisement")
+        .setColor("RANDOM")
+        .addField("Utilisateur banni", `${bUser} (ID : ${bUser.id})`)
+        .setFooter("by Safe", client.user.avatarURL)
+        .addField("Banni par", `<@${message.author.id}> (ID : ${message.author.id})`)
+        .addField("Banni dans", message.channel)
+        .addField("Banni à", message.createdAt)
+        .addField("Raison", bReason || eReason);
+        if(checkLogsChannel()) {
+            setTimeout(() => {
+                let logs = message.guild.channels.cache.find(channel => channel.name === 'logs');
+                client.channels.cache.get(logs.id).send(banEmbed);
+            }, 3000);
+        }
     };
 
     if(message.content.startsWith(prefix + "clear")) {
@@ -258,7 +291,12 @@ client.on("message", async message => {
         .addField("Commande effectué le ", message.createdAt)
         .setFooter("by Safe", client.user.avatarURL)
         .setColor('RANDOM')
-        client.channels.cache.get(idLogs).send(clearEmbed);
+        if(checkLogsChannel()) {
+            setTimeout(() => {
+                let logs = message.guild.channels.cache.find(channel => channel.name === 'logs');
+                client.channels.cache.get(logs.id).send(clearEmbed);
+            }, 3000);
+        }
     };
     
     /*
